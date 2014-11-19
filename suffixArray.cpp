@@ -4,6 +4,7 @@
 #include "malloc.h"
 #include "stdio.h"
 #include <map>
+#include <cmath>
 
 using std::map;
 
@@ -80,7 +81,7 @@ CompressedSuffixArray::CompressedSuffixArray() {
     oddEvenArrays = NULL;
     companionArrays = NULL;
     values = NULL;
-    size = 0;
+    _size = 0;
     levels = 0;
 }
 

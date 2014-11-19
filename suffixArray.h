@@ -21,11 +21,9 @@ typedef unsigned char * OddEvenArray;
  * The string is not retained by this class.
  */
 class SuffixArray {
-    private:
-        int _size;
-
     protected:
         int* values;
+        int _size;
 
     public:
         SuffixArray();
