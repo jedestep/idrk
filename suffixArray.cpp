@@ -70,7 +70,7 @@ int SuffixArray::rank(OddEvenArray arr, size_t numBits) {
         int sum = 0;
         for (int i=0; i<numBytes; i+=sizeof(unsigned long long)) {
             unsigned long long* a = (unsigned long long*) (arr + i);
-            sum += __builtin_popcount(*a);
+            sum += __builtin_popcountll(*a);
         }
         return sum;
     }
