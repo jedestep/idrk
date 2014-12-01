@@ -4,15 +4,12 @@
 #define SIGMA 4
 
 #include "companionArray.h"
+#include "oeArray.h"
 #include <string>
 
 using std::string;
 
-// A vector representing whether a position is odd or even
-// In the paper, referred to as B_k
-// 0 is odd, 1 is even
-// TODO can we decrease the size of this?
-typedef unsigned char * OddEvenArray;
+class CompanionArray;
 
 /**
  * An uncompressed suffix array.
@@ -23,7 +20,7 @@ typedef unsigned char * OddEvenArray;
 class SuffixArray {
     protected:
         int* values;
-        int _size;
+        size_t _size;
 
     public:
         SuffixArray();
@@ -34,7 +31,6 @@ class SuffixArray {
 
         // Labels positions as odd or even
         OddEvenArray makeBArray() const;
-        static int rank(OddEvenArray, size_t);
 
         size_t size() const { return _size; }
         const int& operator[](size_t idx) const {

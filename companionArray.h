@@ -2,18 +2,27 @@
 #define _COMPANIONARRAY_H
 
 #include <string>
+#include "suffixArray.h"
+#include "oeArray.h"
 
 using std::string;
 
-class CompanionArray {
+class SuffixArray;
 
+class CompanionArray {
     private:
-        int foo;
-    
+        //The SuffixArray corresponding to the CURRENT level
+        SuffixArray* suffArray;
+        //The OddEvenArray corresponding to the CURRENT level
+        OddEvenArray oeArray;
+        unsigned char level;
+        int* values;
+
     public:
-        const int& operator[](size_t idx) const {
-            return 0;
-        } //TODO
+        CompanionArray(SuffixArray*, const OddEvenArray&, unsigned char);
+        ~CompanionArray();
+
+        const int& operator[](size_t idx) const;
 };
 
 #endif

@@ -13,7 +13,9 @@ SuffixArray::SuffixArray() {
     values = NULL;
 }
 
+//inString should be terminated with a $
 SuffixArray::SuffixArray(const string& inString) {
+    //make the optimizer earn its keep
     size_t len = inString.length();
     _size = len;
     values = (int*)malloc(sizeof(int) * len);
@@ -34,7 +36,7 @@ SuffixArray::~SuffixArray() {
 }
 
 void SuffixArray::print() {
-    for (int i=0;i<_size;i++) {
+    for (size_t i=0;i<_size;i++) {
         printf("%d ",values[i]);
     }
     printf("\n");
@@ -54,26 +56,6 @@ OddEvenArray SuffixArray::makeBArray() const {
         oe[_oe_byte] |= ((values[i]+1) % 2) << (7 - _oe_bitPos++);
     }
     return oe;
-}
-
-int SuffixArray::rank(OddEvenArray arr, size_t numBits) {
-    if (numBits <= 8*sizeof(unsigned int)) {
-        unsigned int* a = (unsigned int*)arr;
-        return __builtin_popcount(*a);
-    }
-    else if (numBits <= 8*sizeof(unsigned long long)) {
-        unsigned long long* a = (unsigned long long*)arr;
-        return __builtin_popcountll(*a);
-    }
-    else {
-        int numBytes = numBits / 8;
-        int sum = 0;
-        for (int i=0; i<numBytes; i+=sizeof(unsigned long long)) {
-            unsigned long long* a = (unsigned long long*) (arr + i);
-            sum += __builtin_popcountll(*a);
-        }
-        return sum;
-    }
 }
 
 /* ** CompressedSuffixArray ** */
@@ -96,7 +78,7 @@ const int& CompressedSuffixArray::_lookup(size_t i, unsigned char k) {
         return this->values[i];
     }
 
-    return 2 * _lookup(SuffixArray::rank(oddEvenArrays[k], companionArrays[k][i]), k + 1) + (oddEvenArrays[k][i] - 1);
+    return 2 * _lookup(rank(oddEvenArrays[k], companionArrays[k][i]), k + 1) + (oeGet(oddEvenArrays[k],i) - 1);
 }
 
 int main() {
@@ -108,6 +90,10 @@ int main() {
     OddEvenArray B = b.makeBArray();
     for (size_t i=0; i<1 + b.size()/8; i++) {
         printf("%x ", B[i]);
+    }
+    printf("\n");
+    for (size_t i=0; i<8; i++) {
+        printf("%d ", oeGet(B,i));
     }
     printf("\n");
     delete B;
