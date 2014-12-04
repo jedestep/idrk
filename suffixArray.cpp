@@ -3,11 +3,13 @@
 #include "malloc.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "time.h"
 #include <map>
+#include <iostream>
+#include <algorithm>
 #include <cmath>
 
 using std::map;
+using std::string;
 
 SuffixArray::SuffixArray() {
     _size = 0;
@@ -18,13 +20,44 @@ SuffixArray::SuffixArray() {
 SuffixArray::SuffixArray(const string& inString) {
     //make the optimizer earn its keep
     size_t len = inString.length();
+    _size = len;
+    /*
+    string s1(inString);
+    SuffixArray::SuffixComparator cmp;
+    cmp.s = s1;
+    cmp.len = len;
+    cmp.gap = 0;
     this->_size = len;
     values = (int*)malloc(sizeof(int) * len);
+    //int* positions = (int*)malloc(sizeof(int) * len);
+    int* temp = (int*)calloc(len,sizeof(int));
+    for (int i=0; i<len; ++i) {
+        values[i] = i;
+    }
+    for (cmp.gap = 1;; cmp.gap *= 2) {
+        printf("gap is %d\n",cmp.gap);
+        std::sort(values, values + len, cmp);
+        for (int i=0;i<len-1;++i) {
+            temp[i+1] = temp[i] + cmp(values[i],values[i+1]);
+            cmp.s[values[i]] = temp[i];
+        }
+        if (temp[len-1] == len-1) break;
+    
+    }
+    */
+    values = (int*)malloc(sizeof(int) * len);
     map<string,int> m;
+    int progress = 0;
+    int percentD = len / 100;
     for (size_t i=0; i<len; i++) {
+        if ((i % percentD) == 0) {
+            std::cout << "So far " << progress++ << "% complete at iteration 1...\r";
+            std::cout.flush();
+        }
         string subs = inString.substr(i, len);
         m[subs] = i;
     }
+    printf("\n");
     map<string,int>::iterator it = m.begin();
     int vali = 0;
     for (; it != m.end(); ++it) {
@@ -163,11 +196,9 @@ size_t CompressedSuffixArray::_lookup(size_t i, unsigned char k) {
 
 size_t CompressedSuffixArray::realSize() const {
     //size of values array
-    printf("initial realsize is %d\n",_realSize*sizeof(int));
     size_t s = _realSize * sizeof(int);
     for (int i=0; i<levels; i++) {
         size_t v1 = companionArrays[i].realSize();
-        printf("v1 is %d\n",v1);
         s += v1;
         size_t v2 = (sizeof(unsigned char) * companionArrays[i].size()) / 8;
         s += v2;
@@ -182,11 +213,12 @@ void CompressedSuffixArray::print() {
     printf("\n");
 }
 
+#ifdef DEBUG
 int main() {
 //    string a = "accaccaccaccacaaacacaccacccaccab";
     string a = "";
     char cs[4] = {'a','c','g','t'};
-    for(int i=0;i<4095;i++) {
+    for(int i=0;i<4100;i++) {
         a += cs[rand()%4];
     }
     a += '$';
@@ -226,3 +258,4 @@ int main() {
     printf("\n");
     */
 }
+#endif

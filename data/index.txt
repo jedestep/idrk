@@ -1,0 +1,6 @@
+data/a.fa
+data/b.fa
+data/c.fa
+data/d.fa
+data/e.fa
+data/f.fa

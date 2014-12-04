@@ -22,6 +22,20 @@ class SuffixArray {
         int* values;
         size_t _size;
 
+        struct SuffixComparator {
+            int gap;
+            int len;
+            string s;
+            bool operator()(int i, int j) {
+                if (s[i] != s[j]) {
+                    return s[i] < s[j];
+                }
+                i += gap;
+                j += gap;
+                return (i < len && j < len) ? s[i] < s[j] : i > j;
+            }
+        };
+
     public:
         SuffixArray();
         SuffixArray(const string&);
