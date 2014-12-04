@@ -4,8 +4,10 @@
 #include <string>
 #include "suffixArray.h"
 #include "oeArray.h"
+#include <sdsl/vectors.hpp>
 
 using std::string;
+using namespace sdsl;
 
 class SuffixArray;
 
@@ -16,7 +18,8 @@ class CompanionArray {
         //The OddEvenArray corresponding to the CURRENT level
         OddEvenArray oeArray;
         unsigned char level;
-        int* values;
+        //int* values;
+        enc_vector<>* values;
         size_t _size;
         size_t _realSize;
 
@@ -26,7 +29,7 @@ class CompanionArray {
 
         int operator[](size_t idx) const;
         size_t size() {return _size;}
-        size_t realSize() {return sizeof(int)*_realSize;}
+        size_t realSize() {return _realSize;}
         void print();
 };
 

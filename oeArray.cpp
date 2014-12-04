@@ -47,7 +47,7 @@ unsigned int rank(OddEvenArray arr, unsigned int numBits) {
     }
     else {
         int sum = 0;
-        int longBitSize = 8*sizeof(unsigned long long);
+        size_t longBitSize = 8*sizeof(unsigned long long);
         for (int i=0; i<numBytes; i+=sizeof(unsigned long long)) {
             if ((numBits - (i*longBitSize/8)) > longBitSize) {
                 unsigned long long* a = (unsigned long long*) (arr + i);

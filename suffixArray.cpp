@@ -78,13 +78,14 @@ CompressedSuffixArray::CompressedSuffixArray(const string& s) {
     size_t len = s.length();
     this->_size = len;
     levels = (unsigned int) ceil(log2(log2(len) / log2(SIGMA)));
-    printf("levels is %d\n",levels);
+    //printf("levels is %d\n",levels);
     this->oddEvenArrays = (OddEvenArray*)malloc(levels*sizeof(OddEvenArray));
     this->companionArrays = (CompanionArray*)malloc(levels*sizeof(CompanionArray));
+    //printf("companionArray size is %d\n",levels*sizeof(CompanionArray));
     SuffixArray* sa0 = new SuffixArray(s);
     SuffixArray* curr = sa0;
     SuffixArray* old;
-    int* temp;
+    int* temp = NULL;
     //printf("about to enter loop\n");
     for(int i=0;i<levels;i++) {
         //make oeArray for this level
@@ -103,7 +104,7 @@ CompressedSuffixArray::CompressedSuffixArray(const string& s) {
         //printf("new size is %d\n",curr->size()/2);
         temp = (int*)malloc((curr->size()/2) * sizeof(int));
         size_t cnt = 0;
-        for(int j=0;j<curr->size();j++) {
+        for(size_t j=0;j<curr->size();j++) {
             if(oeGet(this->oddEvenArrays[i],j)) {
                 //printf("cnt is %d, maximum ok value is %d\n",cnt,curr->size()/2);
                 temp[cnt++] = (*curr)[j]/2;
@@ -169,7 +170,7 @@ size_t CompressedSuffixArray::realSize() const {
         printf("v1 is %d\n",v1);
         s += v1;
         size_t v2 = (sizeof(unsigned char) * companionArrays[i].size()) / 8;
-        //s += v2;
+        s += v2;
     }
     return s;
 }
@@ -190,11 +191,11 @@ int main() {
     }
     a += '$';
     SuffixArray b(a);
-    printf("original realsize is %d\n",b.realSize());
+    printf("original realsize is %d bytes\n",b.realSize());
     //b.print();
 
     CompressedSuffixArray c(a);
-    printf("compressed realsize is %d\n",c.realSize());
+    printf("compressed realsize is %d bytes\n",c.realSize());
 
     //c.print();
     //printf("%d\n", c[24]);
