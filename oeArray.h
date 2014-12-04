@@ -11,4 +11,10 @@ unsigned int rank(OddEvenArray, unsigned int);
 // get the value of the ith bit
 unsigned char oeGet(OddEvenArray, unsigned int);
 
+void printOeArray(OddEvenArray, unsigned int);
+
+void printRankArray(OddEvenArray, unsigned int);
+
+void oeRealSize(OddEvenArray);
+
 #endif

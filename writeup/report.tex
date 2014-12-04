@@ -10,9 +10,11 @@ Final Project}
 Easily searchable representations of genome strings are useful for many kinds of analysis, but in practice their usability is often limited on commodity hardware due to their high memory requirements. Suffix arrays are one of the least memory-intensive commonly used representations, but its space requirements may still be prohibitive in the case of indexing numerous genomes. In this paper we investigate the suffix array compression scheme described in \cite{GV05}. We attempt to apply the compressed suffix arrays as a searchable database of multiple genomes with use in the context of metagenomics. The design of our database is similar to that of QUASAR \cite{B99}.
 \end{abstract}
 \section{Introduction}
-We arrived at this design while investigating multiple topics. From one end, we were interested in pursuing the applicability of compressed data structures to representing genomes. Many implementations of useful index structures like suffix trees are extremely memory intensive, so decreasing the size of their representation is paramount if they are to be used on commodity hardware. \cite{B99} points out that, in the operation of QUASAR, numerous special methods are necessary to accommodate suffix arrays which are too large to fit in main memory. As such, we attempted to apply the compression methods of \cite{GV05} to a search index similar to QUASAR.\\
+\indent We arrived at this design while investigating multiple topics. From one end, we were interested in pursuing the applicability of compressed data structures to representing genomes. Many implementations of useful index structures like suffix trees are extremely memory intensive, so decreasing the size of their representation is paramount if they are to be used on commodity hardware. Literature on the topic of succinct data structures often neglects to discuss practical versions of their structures, and as such we explore how well the methods of \cite{GV05} work in a real program.\\
+\indent From an alternative angle, we noted that most approaches to metagenomics rely on probabilistic methods, such as \cite{BS09}, and less attention is given to index search methods that are commonly used for read alignment. 
 
-
+\section{Prior Work}
+Burkhardt \cite{B99} points out that, in the operation of QUASAR, numerous special methods are necessary to accommodate suffix arrays which are too large to fit in main memory. As such, we attempted to apply the compression methods of Grossi and Vitter \cite{GV05} to a search index similar to QUASAR.\\
 \begin{thebibliography}{1}
 \bibitem{GV05}
 	Roberto Grossi and Jeffrey Vitter,
@@ -26,5 +28,10 @@ We arrived at this design while investigating multiple topics. From one end, we 
 	Proceedings of the third annual international conference on Computational molecular biology,
 	pp. 77-83,
 	1999.
+\bibitem{BS09}
+	Arthur Brady and Steven Salzberg,
+	\emph{Phymm and PhymmBL: Metagenomic Phylogenetic Classification with Interpolated Markov Models}.
+	Nature Methods,
+	2009.
 \end{thebibliography}
 \end{document}

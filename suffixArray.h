@@ -25,6 +25,7 @@ class SuffixArray {
     public:
         SuffixArray();
         SuffixArray(const string&);
+        SuffixArray(int*, size_t);
         ~SuffixArray();
 
         void print();
@@ -33,6 +34,8 @@ class SuffixArray {
         OddEvenArray makeBArray() const;
 
         size_t size() const { return _size; }
+        //the 1+ is to account for storing the size
+        size_t realSize() const { return sizeof(int)*(1+_size); }
         const int& operator[](size_t idx) const {
             return values[idx];
         }
@@ -40,18 +43,22 @@ class SuffixArray {
 
 class CompressedSuffixArray : SuffixArray {
     private:
-        //smallestSuffixArray int*; //in the text, this is SA_l
         unsigned char levels;
         OddEvenArray* oddEvenArrays; //B_k
         CompanionArray* companionArrays; //Psi_k
+        size_t _realSize;
 
-        const int& _lookup(size_t, unsigned char);
+        size_t _lookup(size_t, unsigned char);
 
     public:
         CompressedSuffixArray();
         CompressedSuffixArray(const string&);
+        ~CompressedSuffixArray();
 
-        const int& operator[](size_t index) { return this->_lookup(index, (unsigned char)0); };
+        void print();
+        size_t realSize() const;
+
+        size_t operator[](size_t index) { return this->_lookup(index, (unsigned char)0); };
 
 };
 #endif

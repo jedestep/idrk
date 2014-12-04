@@ -17,12 +17,17 @@ class CompanionArray {
         OddEvenArray oeArray;
         unsigned char level;
         int* values;
+        size_t _size;
+        size_t _realSize;
 
     public:
         CompanionArray(SuffixArray*, const OddEvenArray&, unsigned char);
         ~CompanionArray();
 
-        const int& operator[](size_t idx) const;
+        int operator[](size_t idx) const;
+        size_t size() {return _size;}
+        size_t realSize() {return sizeof(int)*_realSize;}
+        void print();
 };
 
 #endif
