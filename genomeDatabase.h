@@ -12,7 +12,7 @@ class GenomeEntry {
         GenomeEntry(const string&, const string&);
         string genome;
         string label;
-        SuffixArray* suffixArray;
+        CompressedSuffixArray* suffixArray;
 };
 
 class GenomeDatabase{
@@ -32,6 +32,7 @@ class GenomeDatabase{
         GenomeEntry* buildEntry(const string&, const string&);
 
     public:
+        GenomeDatabase();
         //arg0 is labels, arg1 is genomes
 		GenomeDatabase(vector<string>, vector<string>);
 

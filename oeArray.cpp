@@ -28,6 +28,7 @@ unsigned int rank(OddEvenArray arr, unsigned int numBits) {
     numBits++;
     int numBytes = (int)ceil(numBits / 8.0);
     if (numBits <= 8*sizeof(unsigned int)) {
+        //printf("in the 32 case\n");
         unsigned int z = 0;
         for (int i=0; i<numBytes; i++) {
             z |= arr[i] << (8*numBytes - 8*(i+1));
@@ -36,7 +37,9 @@ unsigned int rank(OddEvenArray arr, unsigned int numBits) {
             z = z >> (8 - numBits%8);
         return __builtin_popcount(z);
     }
+    /*
     else if (numBits <= 8*sizeof(unsigned long long)) {
+        printf("in the 64 case\n");
         unsigned long long z = 0;
         for (int i=0; i<numBytes; i++) {
             z |= arr[i] << (8*numBytes - 8*(i+1));
@@ -45,9 +48,25 @@ unsigned int rank(OddEvenArray arr, unsigned int numBits) {
             z = z >> (8 - numBits%8);
         return __builtin_popcountll(z);
     }
+    */
     else {
         int sum = 0;
-        size_t longBitSize = 8*sizeof(unsigned long long);
+        //copy of numbits
+        int b = numBits;
+        size_t longBitSize = 8*sizeof(unsigned int);
+        while (b > longBitSize) {
+            //printf("sum is %d\n",sum);
+            //-1 because it's there.
+            sum += rank(arr, longBitSize-1);
+            b -= longBitSize;
+            arr += sizeof(unsigned char) * sizeof(unsigned int);
+        }
+        //printf("sum is %d\n",sum);
+        //printf("b is %d\n",b);
+        if (b) {
+            sum += rank(arr, b-1);
+        }
+        /*
         for (int i=0; i<numBytes; i+=sizeof(unsigned long long)) {
             if ((numBits - (i*longBitSize/8)) > longBitSize) {
                 unsigned long long* a = (unsigned long long*) (arr + i);
@@ -58,6 +77,7 @@ unsigned int rank(OddEvenArray arr, unsigned int numBits) {
                 break;
             }
         }
+        */
         return sum;
     }
 }

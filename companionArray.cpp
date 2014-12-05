@@ -9,6 +9,10 @@ CompanionArray::CompanionArray(SuffixArray* suffArray, const OddEvenArray& oeArr
 
     //int* vals = (int*)malloc(sizeof(int) * suffArray->size()/2);
     int_vector<> iv(suffArray->size()/2);
+    /*
+    size_t oddSize = suffArray->size() - rank(oeArray, suffArray->size()-1);
+    int_vector<> iv(oddSize);
+    */
 
     size_t pos = 0;
     for (size_t i=0; i<suffArray->size(); i++) {

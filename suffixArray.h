@@ -50,7 +50,7 @@ class SuffixArray {
         size_t size() const { return _size; }
         //the 1+ is to account for storing the size
         size_t realSize() const { return sizeof(int)*(1+_size); }
-        const int& operator[](size_t idx) const {
+        virtual const int& operator[](size_t idx) const {
             return values[idx];
         }
         const int& get(size_t idx) const {
@@ -58,7 +58,7 @@ class SuffixArray {
         }
 };
 
-class CompressedSuffixArray : SuffixArray {
+class CompressedSuffixArray : public SuffixArray {
     private:
         unsigned char levels;
         OddEvenArray* oddEvenArrays; //B_k
@@ -76,6 +76,9 @@ class CompressedSuffixArray : SuffixArray {
         size_t realSize() const;
 
         size_t operator[](size_t index) { return this->_lookup(index, (unsigned char)0); };
+        size_t get(size_t idx) {
+            return this->operator[](idx);
+        }
 
 };
 #endif

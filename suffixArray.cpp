@@ -112,9 +112,11 @@ CompressedSuffixArray::CompressedSuffixArray(const string& s) {
     int* temp = NULL;
     for(int i=0;i<levels;i++) {
         this->oddEvenArrays[i] = curr->makeBArray();
+        //printOeArray(oddEvenArrays[i],curr->size());
+        //printRankArray(oddEvenArrays[i],curr->size());
         //make companionArray for this level
-        CompanionArray c(curr, this->oddEvenArrays[i],i);
-        this->companionArrays[i] = c;
+        CompanionArray* c = new CompanionArray(curr, this->oddEvenArrays[i],i);
+        this->companionArrays[i] = *c;
 
         //gather evens and divide them by 2
         temp = (int*)malloc((curr->size()/2) * sizeof(int));
@@ -156,13 +158,19 @@ CompressedSuffixArray::~CompressedSuffixArray() {
 }
 
 size_t CompressedSuffixArray::_lookup(size_t i, unsigned char k) {
+    //printf("lookup is happening\n");
+    //printf("level is %d\n",k);
     if (k == this->levels) {
         return this->values[i];
     }
 
+    //printf("i is %d, size is %d\n",i,companionArrays[k].size());
     size_t comp_ki = companionArrays[k][i]-1;
+    //printf("comp_ki is %d\n",comp_ki);
     size_t rnk = rank(oddEvenArrays[k], comp_ki);
+    //printf("rnk is %d\n",rnk);
     size_t tmp = _lookup(rnk - 1, k + 1);
+    //printf("tmp is %d\n",tmp);
     return (2 * tmp) + (oeGet(oddEvenArrays[k],i) - 1);
 }
 
@@ -185,11 +193,11 @@ void CompressedSuffixArray::print() {
     printf("\n");
 }
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 int main() {
-    //string a = "acgtatgca$";
-    string a = "aaccggttctctc$";
+    string a = "acgtatgca$";
+    //string a = "aaccggttctctc$";
     /*
     string a = "";
     char cs[4] = {'a','c','g','t'};
@@ -198,6 +206,7 @@ int main() {
     }
     a += '$';
     */
+    /*
     SuffixArray b(a);
     //printf("original realsize is %d bytes\n",b.realSize());
     b.print();
@@ -206,6 +215,12 @@ int main() {
     //printf("compressed realsize is %d bytes\n",c.realSize());
 
     c.print();
+    */
+    unsigned char b[8];
+    for (int i=0;i<8;i++) {
+        b[i] = 0xff;
+    }
+    printRankArray(b, 8*8);
     /*
     printf("c[0] is %d\n",c[0]);
     printf("c[1] is %d\n",c[1]);
