@@ -1,4 +1,6 @@
 \documentclass{article}
+\usepackage{float}
+\newcommand{\popcnt}{\texttt{\_\_builtin\_popcount }}
 \begin{document}
 \title{600.639 Computational Genomics\\
 Final Project}
@@ -10,23 +12,40 @@ Final Project}
 Easily searchable representations of genome strings are useful for many kinds of analysis, but in practice their usability is often limited on commodity hardware due to their high memory requirements. Suffix arrays are one of the least memory-intensive commonly used representations, but its space requirements may still be prohibitive in the case of indexing numerous genomes. In this paper we investigate the suffix array compression scheme described in \cite{GV05}. We attempt to apply the compressed suffix arrays as a searchable database of multiple genomes with use in the context of metagenomics. The design of our database is similar to that of QUASAR \cite{B99}.
 \end{abstract}
 \section{Introduction}
+\label{sec-intro}
 \indent We arrived at this design while investigating multiple topics. From one end, we were interested in pursuing the applicability of compressed data structures to representing genomes. Many implementations of useful index structures like suffix trees are extremely memory intensive, so decreasing the size of their representation is paramount if they are to be used on commodity hardware. Literature on the topic of succinct data structures often neglects to discuss practical versions of their structures, and as such we explore how well the methods of \cite{GV05} work in a real program.\\
 \indent From an alternative angle, we noted that most approaches to metagenomics rely on probabilistic methods, such as \cite{BS09}, and less attention is given to index search methods that are commonly used for read alignment. 
 
 \section{Prior Work}
+\label{sec-prior-work}
 Burkhardt \cite{B99} points out that, in the operation of QUASAR, numerous special methods are necessary to accommodate suffix arrays which are too large to fit in main memory. As such, we attempted to apply the compression methods of Grossi and Vitter \cite{GV05} to a search index similar to QUASAR.\\
 
 \section{Methods and Software}
-We implemented a suffix array representation and a compressed suffix array representation, as well as a database that stores labels and genomes and can be queried with reads.\\
-\indent The suffix array is implemented as follows. It contains a list of integers representing the offsets of the suffixes of a string. The actual strings are not saved in the class. Each suffix array has the ability to create the B array. The B array at i is 0 if the corresponding ith entry in the suffix array is odd, and the B array at i is 1 if the corresponding ith entry in the suffix array is even.\\
-\indent The implementation of the compressed suffix array extends suffix array. Added class variables include the number of levels, or the maximum number of times the suffix array can be compressed; a B array, or the odd-even array as described in the implementation of suffix array; and a Psi array, also known as a companion array. Additionally, a lookup method is implemented. The lookup either returns the integer values of the compressed suffix array if the maximum level has been reached, or the lookup of the next rank down multiplied by the current entry in the odd even B array minus one.\\
-\indent The Psi array, or companion array, is also implemented as a class. It contains a pointer to a suffix array (SA), an odd-even array (B array), size values, and an enc vector (how do underscore) of values. The class enc vector is from the SDSL-Lite (CITATION HERE) implementation by Simon Gog. This is vector class that saves space by encoding each integer with self-delimiting code, and has constant time access. This is built by getting the values from the suffix array using the formula provided by the Grossi and Vitter paper.\\
+\label{sec-methods-software}
+\subsection{Suffix Arrays}
+\label{subsec-sa}
+We implemented both a compressed and uncompressed suffix array representation, as well as a database that stores labels and genomes and can be queried with reads.\\
+\indent The uncompressed suffix array is implemented as an array of integers. The actual substrings are not saved in the class. In addition to standard functionality, each suffix array has the ability to create an array $B$. $B$ is defined as follows \cite{GV05}:
+\begin{figure}[H]
+\label{fig-defn-b}
+$B[i] = i$ if $SA[i]\;\%\; 2 = 0$\\
+$B[i] = j$ where $SA[j] = SA[i]+1$ otherwise
+\end{figure}
+\indent We are able to represent $B$ as a simple \texttt{unsigned char\*} with each value being a single bit. Not only is this representation highly compact, but we obtain several useful properties, particularly in the computation of $rank(B,i)$. Using the SSE4.2 extension to the x86 architecture, we can compute the rank on 4-byte chunks using the \popcnt function. This saves space over the original description, which used a rank-select dictionary to store $rank$ explicitly.\\
+\indent The implementation of the compressed suffix array extends suffix array. Added class variables include the number of levels $k$, which is the maximum number of times the suffix array can be compressed; a vector of arrays $B_i$ for $0 < i < k$, which we refer to as the \emph{odd-even arrays}; and a vector of arrays $\Psi_i$, which we refer to as the \emph{companion arrays}. Additionally, a lookup method is implemented based on \cite{GV05} with several small modifications; we describe the need for these in Section~\ref{sec-conclusions}.\\
+\indent Each array $\Psi_i$ is implemented as a standalone class, holding a reference to the array $B_i$ and an integer array, which is a cache of the values represented by $\Psi_i$, and which we will call \texttt{values}. While \cite{GV05} describes a succinct method for representing \texttt{values}, we chose to investigate a different approach. The paper mentions defining \texttt{values} as a total function, i.e. it contains the mapped value for every valid input. In practice, this is not necessary, as $\Psi_i[j] = j$ whenever $B_i[j] = 1$. Therefore, we store only half the possible values of $\Psi_i$ in \texttt{values}, specifically those for which $B_i[j] = 0$. While only half the values in the codomain of $\Psi_i$ are stored explicitly, storing them directly led to an increase in overall size of the data structure when compared to a standard suffix array. As such, we stored them in a compressed integer array from the SDSL-Lite library implementation by Simon Gog \cite{SDSL}. This vector class first encodes its integers as their deltas, then applies a self-delimiting code to the result. \cite{OS07}.\\
+\subsection{Database}
+\label{subsec-db}
 \indent There is an implementation of a class that represents an entry in the database, called a genome entry. This consists of a label, or the name of the species that the genome is from, the genome, and the associated compressed suffix array of this genome.\\
 \indent Finally, there is an implementation of a database, called a genome database. The purpose of this database is to build a database of genomes and their associated labels. Users can query the database with reads and receive the names of the genomes that the read is contained in within the database. This is implemented with a vector of genome entries. In order to find which if any of the genomes in the database a read is contained within, the user calls getGenomeLabel and passes in the read. This method calls binary search on each genome entry in the database, which searches through the genome to find the correct index if one exists. There is also a check to ensure that the read is a prefix of the genome in this genome entry (check).\\
 \indent All of these were implemented for various reasons. The suffix array is necessary because in order to create a compressed suffix array, a normal-size suffix array must be available. The compressed suffix array was implemented in order to perform the actual compression on the information in the database. Psi is implemented in order to build the comrpessed suffix array. The genome entry class is implemented in order to combine information needed for one entry in the database in order for the database to store meaningful information. Finally, the genome database was implemented in order to let a user find which genomes a read is contained in within the database.\\
+
 \section{Results}
+\label{sec-results}
 
 \section{Conclusions}
+\label{sec-conclusions}
+
 \begin{thebibliography}{1}
 \bibitem{GV05}
 	Roberto Grossi and Jeffrey Vitter,
@@ -45,5 +64,15 @@ We implemented a suffix array representation and a compressed suffix array repre
 	\emph{Phymm and PhymmBL: Metagenomic Phylogenetic Classification with Interpolated Markov Models}.
 	Nature Methods,
 	2009.
+\bibitem{OS07}
+	Okanohara, Daisuke, and Kunihiko Sadakane,
+	\emph{Practical Entropy-Compressed Rank/Select Dictionary}. 
+	Proceedings of the 9th Workshop on Algorithm Engineering and Experiments,
+	ALENEX,
+	2007.
+\bibitem{SDSL}
+	Gog, Simon.
+	\emph{Succinct Data Structures Library lite}.
+	https://github.com/simongog/sdsl-lite.
 \end{thebibliography}
 \end{document}
