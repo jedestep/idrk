@@ -32,3 +32,6 @@ Special thanks to [this](http://codeforces.com/blog/entry/4025) suffix array imp
 - ```oeArray.h``` contains the API for the arrays _B_ and _rank_ outlined in the paper. Note that _rank_ is never represented explicitly.
 - ```companionArray.h``` contains the API for the array _Psi_ outlined in the paper. Here we use a different implementation which relies on sdsl-lite.
 - ```genomeDatabase.h``` contains a basic storage and search API for determining the source of a read (or more generally, any input string). The primary public operation it supports is ```getGenomeLabel```, which returns a list of stored strings in which the input string is contained.
+
+## Contributions
+Jed implemented the SuffixArray and sizeCheck. Jed and Ashleigh implemented CompressedSuffixArray, genomeDatabase, oeArray, and companionArray. We collaborated for the presentation and report.
