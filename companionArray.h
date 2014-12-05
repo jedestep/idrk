@@ -13,17 +13,19 @@ class SuffixArray;
 
 class CompanionArray {
     private:
-        //The SuffixArray corresponding to the CURRENT level
-        SuffixArray* suffArray;
-        //The OddEvenArray corresponding to the CURRENT level
+        /**
+         * The oeArray corresponding to the current level
+         */
         OddEvenArray oeArray;
         unsigned char level;
-        //int* values;
         enc_vector<>* values;
         size_t _size;
         size_t _realSize;
 
     public:
+        /**
+         * Build this array given a suffix array, an oeArray, and the current level
+         */
         CompanionArray(SuffixArray*, const OddEvenArray&, unsigned char);
         ~CompanionArray();
 

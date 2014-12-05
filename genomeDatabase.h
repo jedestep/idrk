@@ -17,7 +17,6 @@ class GenomeEntry {
 
 class GenomeDatabase{
 	private:
-        //use a fancy data structure? idrk
 		vector<GenomeEntry> entries;
 
         /**
@@ -28,17 +27,29 @@ class GenomeDatabase{
          */
 		int binarySearch(const GenomeEntry&, const string&, size_t, size_t);
 
-        //label then genome
-        GenomeEntry* buildEntry(const string&, const string&);
-
     public:
         GenomeDatabase();
-        //arg0 is labels, arg1 is genomes
+        /**
+         * Construct a database with N entries.
+         * N = length(arg0) = length(arg1)
+         * @param a list of labels
+         * @param a list of genome strings
+         */
 		GenomeDatabase(vector<string>, vector<string>);
 
-        //arg0 is label, arg1 is genome
+        /**
+         * Add one GenomeEntry to the database.
+         * @param a label
+         * @param a genome string
+         */
         void insert(string, string);
 
+        /**
+         * Find the list of genomes in which the input string
+         * occurs, and return their labels.
+         * @param the string to search for
+         * @return the vector of labels in which it was found
+         */
 		vector<string> getGenomeLabel(const string&);
 };
 #endif
