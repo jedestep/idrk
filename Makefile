@@ -4,7 +4,7 @@ CPPFLAGS = -std=c++11 -lm -mpopcnt -g -O3 -I sdsl-lib/include -L sdsl-lib/lib -l
 dbmain: genomeDatabase.o suffixArray.o oeArray.o companionArray.o
 	$(CPP) -o $@ $^ $(CPPFLAGS)
 
-testmain: sizeCheck.o suffixArray.o oeArray.o companionArray.o
+sizeCheck: sizeCheck.o suffixArray.o oeArray.o companionArray.o
 	$(CPP) -o $@ $^ $(CPPFLAGS)
 
 suffArrayTest: oeArray.o companionArray.o
@@ -17,5 +17,5 @@ suffArrayTest: oeArray.o companionArray.o
 clean:
 	rm -f *.o *.gch a.out
 	rm -f dbmain
-	rm -f testmain
+	rm -f sizeCheck
 	rm -f suffArrayTest
