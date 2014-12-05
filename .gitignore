@@ -3,3 +3,6 @@
 *.swp
 a.out
 /data/real
+dbmain
+sizeCheck
+suffArrayTest

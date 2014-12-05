@@ -206,10 +206,10 @@ int main() {
     a += '$';
     SuffixArray b(a);
     printf("original realsize is %d bytes\n",b.realSize());
-    //b.print();
+    b.print();
 
     CompressedSuffixArray c(a);
     printf("compressed realsize is %d bytes\n",c.realSize());
-    //c.print();
+    c.print();
 }
 #endif
