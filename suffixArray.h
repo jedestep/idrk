@@ -53,6 +53,9 @@ class SuffixArray {
         const int& operator[](size_t idx) const {
             return values[idx];
         }
+        const int& get(size_t idx) const {
+            return this->operator[](idx);
+        }
 };
 
 class CompressedSuffixArray : SuffixArray {

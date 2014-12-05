@@ -43,7 +43,7 @@ int CompanionArray::operator[](size_t idx) const {
     //printf("rank of %d is %d\n",idx+1,rank(oeArray,idx+1));
     size_t zeroIdx = (idx) - rank(oeArray,idx);
     //printf("zeroIdx is %d\n",zeroIdx);
-    //printf("size of values is %d\n",
+    //printf("size of values is %d\n", values->size());
     return 1+(*(this->values))[zeroIdx];
 }
 
