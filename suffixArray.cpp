@@ -16,12 +16,12 @@ SuffixArray::SuffixArray() {
     values = NULL;
 }
 
-//inString should be terminated with a $
 SuffixArray::SuffixArray(const string& inString) {
     //make the optimizer earn its keep
     size_t len = inString.length();
     _size = len;
     /*
+    //this is the method of http://codeforces.com/blog/entry/4025
     string s1(inString);
     SuffixArray::SuffixComparator cmp;
     cmp.s = s1;
@@ -112,8 +112,6 @@ CompressedSuffixArray::CompressedSuffixArray(const string& s) {
     int* temp = NULL;
     for(int i=0;i<levels;i++) {
         this->oddEvenArrays[i] = curr->makeBArray();
-        //printOeArray(oddEvenArrays[i],curr->size());
-        //printRankArray(oddEvenArrays[i],curr->size());
         //make companionArray for this level
         CompanionArray* c = new CompanionArray(curr, this->oddEvenArrays[i],i);
         this->companionArrays[i] = *c;
@@ -130,27 +128,9 @@ CompressedSuffixArray::CompressedSuffixArray(const string& s) {
         curr = new SuffixArray(temp,curr->size()/2);
         delete old;
     }
-    //printf("finishing it up!\n");
-    /*
-    temp = (int*)malloc((curr->size()/2) * sizeof(int));
-    size_t cnt = 0;
-    for(int j=0;j<curr->size();j++) {
-        if((*curr)[j]%2 == 0) {
-            temp[cnt++] = (*curr)[j]/2;
-        }
-    }
-    */
 
     this->_realSize = curr->size();
     this->values = temp;
-
-    /*
-    printf("final values:\n");
-    for(int i=0;i<curr->size();i++) {
-        printf("%d ",values[i]);
-    }
-    printf("\n");
-    */
 }
 
 CompressedSuffixArray::~CompressedSuffixArray() {
@@ -158,19 +138,13 @@ CompressedSuffixArray::~CompressedSuffixArray() {
 }
 
 size_t CompressedSuffixArray::_lookup(size_t i, unsigned char k) {
-    //printf("lookup is happening\n");
-    //printf("level is %d\n",k);
     if (k == this->levels) {
         return this->values[i];
     }
 
-    //printf("i is %d, size is %d\n",i,companionArrays[k].size());
     size_t comp_ki = companionArrays[k][i]-1;
-    //printf("comp_ki is %d\n",comp_ki);
     size_t rnk = rank(oddEvenArrays[k], comp_ki);
-    //printf("rnk is %d\n",rnk);
     size_t tmp = _lookup(rnk - 1, k + 1);
-    //printf("tmp is %d\n",tmp);
     return (2 * tmp) + (oeGet(oddEvenArrays[k],i) - 1);
 }
 
@@ -196,8 +170,6 @@ void CompressedSuffixArray::print() {
 
 #ifdef DEBUG
 int main() {
-    //string a = "acgtatgca$";
-    //string a = "aaccggttctctc$";
     string a = "";
     char cs[4] = {'a','c','g','t'};
     for(int i=0;i<4101;i++) {

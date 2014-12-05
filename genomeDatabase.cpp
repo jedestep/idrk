@@ -34,7 +34,6 @@ int GenomeDatabase::binarySearch(const GenomeEntry& ge, const string& search, si
     }
     int mid = (min + (max - min)/2);
     if (mid < 0) return -1;
-    //printf("mid is %d\n",mid);
     int idx = ge.suffixArray->get(mid) -1;
     string str = ge.genome.substr(idx);
     if (str.compare(search) < 0) {
@@ -75,8 +74,6 @@ int main() {
         while(getline(genomeFile,buf2)) {
             genome += buf2;
         }
-        //genome += '$';
-        //printf("len is %d\n",genome.length());
         gdb.insert(label,genome);
     }
     std::ifstream queries("data/queries.txt");
@@ -86,28 +83,4 @@ int main() {
         std::copy(res.begin(), res.end(), std::ostream_iterator<string>(std::cout, " "));
         std::cout<<"\n";
     }
-    /*
-    string a = "acgtatgca$";
-    string b = "acgtatcga$";
-    vector<string> genomes;
-    genomes.push_back(a);
-    genomes.push_back(b);
-    string la = "one";
-    string lb = "two";
-    vector<string> labels;
-    labels.push_back(la);
-    labels.push_back(lb);
-    GenomeDatabase db(labels, genomes);
-    string one = "acgt";
-    string two = "attg";
-    string three = "gac";
-    vector<string> resOne = db.getGenomeLabel(one);
-    vector<string> resTwo = db.getGenomeLabel(two);
-    vector<string> resThree = db.getGenomeLabel(three);
-    std::copy(resOne.begin(), resOne.end(), std::ostream_iterator<string>(std::cout, " "));
-    std::cout << "\n";
-    std::copy(resTwo.begin(), resTwo.end(), std::ostream_iterator<string>(std::cout, " "));
-    std::cout << "\n";
-    std::copy(resThree.begin(), resThree.end(), std::ostream_iterator<string>(std::cout, " "));
-    std::cout << "\n";*/
 }
