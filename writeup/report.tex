@@ -45,6 +45,9 @@ $B[i] = j$ where $SA[j] = SA[i]+1$ otherwise
 We have produced significant compression in our implementation. We ran our implementation on a randomly generated read of 60,000 nucleotides. The suffix array took up 240,048 bytes, while the compressed suffix array took up 106,998 bytes. This is a compression of 56\%.\\
 \section{Conclusions}
 \label{sec-conclusions}
+While we have made significant improvements on the space that a suffix array takes up, there are several key points to consider about this implementation.\\
+\indent First, it is important to note that the method described by Grossi and Vitter actually increases the size of the suffix array. Therefore the size of the compressed suffix array becomes larger than that of the original suffix array. This is repaired by using enc\_vector. This utilizes deltas in order to compress the compressed suffix array further, contributing to the 56\% compression.\\
+\indent Grossi and Vitter use one-indexed arrays in their algorithm. This brings up a few problems, as the algorithm will work in only two cases. The first is that the arrays are one-indexed and the genome string is of even length. This is because if we are using a one-indexed array and an odd length genome, there will be an unmatched character at the end of the array, so the calculation of $\Psi$ will not work correctly. The second case is when the arrays are zero-indexed and the genome string is of odd length. This error arises due to the same conditions as described above.\\
 
 \begin{thebibliography}{1}
 \bibitem{GV05}
