@@ -180,6 +180,7 @@ size_t CompressedSuffixArray::realSize() const {
     for (int i=0; i<levels; i++) {
         size_t v1 = companionArrays[i].realSize();
         s += v1;
+        // measure the size of the oeArray
         size_t v2 = (sizeof(unsigned char) * companionArrays[i].size()) / 8;
         s += v2;
     }
@@ -193,65 +194,22 @@ void CompressedSuffixArray::print() {
     printf("\n");
 }
 
-//#define DEBUG
 #ifdef DEBUG
 int main() {
-    string a = "acgtatgca$";
+    //string a = "acgtatgca$";
     //string a = "aaccggttctctc$";
-    /*
     string a = "";
     char cs[4] = {'a','c','g','t'};
-    for(int i=0;i<4100;i++) {
+    for(int i=0;i<4101;i++) {
         a += cs[rand()%4];
     }
     a += '$';
-    */
-    /*
     SuffixArray b(a);
-    //printf("original realsize is %d bytes\n",b.realSize());
-    b.print();
+    printf("original realsize is %d bytes\n",b.realSize());
+    //b.print();
 
     CompressedSuffixArray c(a);
-    //printf("compressed realsize is %d bytes\n",c.realSize());
-
-    c.print();
-    */
-    unsigned char b[8];
-    for (int i=0;i<8;i++) {
-        b[i] = 0xff;
-    }
-    printRankArray(b, 8*8);
-    /*
-    printf("c[0] is %d\n",c[0]);
-    printf("c[1] is %d\n",c[1]);
-    printf("c[2] is %d\n",c[2]);
-    */
-    //printf("%d\n", c[24]);
-    /*
-    int* z = (int*)malloc(32);
-    z[0] = 4; z[1] = 7; z[2] = 1;
-    z[3] = 6; z[4] = 8; z[5] = 3;
-    z[6] = 5; z[7] = 2;
-    SuffixArray foo(z,8);
-    OddEvenArray B = foo.makeBArray();
-    printOeArray(B,8);
-    */
-    /*
-    OddEvenArray B = b.makeBArray();
-    for (size_t i=0; i<a.length(); i++) {
-        printf("%d ",oeGet(B,i));
-    }
-    printf("\n");
-
-    for (size_t i=0; i<a.length(); i++) {
-        printf("%d ",rank(B,i));
-    }
-    printf("\n");
-    CompanionArray psi(&b,B,0);
-    for (size_t i=0; i<a.length(); i++) {
-        printf("%d ",psi[i]);
-    }
-    printf("\n");
-    */
+    printf("compressed realsize is %d bytes\n",c.realSize());
+    //c.print();
 }
 #endif

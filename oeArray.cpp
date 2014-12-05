@@ -23,7 +23,6 @@ void printRankArray(OddEvenArray oeArray, unsigned int size) {
 }
 
 unsigned int rank(OddEvenArray arr, unsigned int numBits) {
-    //if (numBits == 0) return 0;
     //up to, and including, the bit at arr[numBits]
     numBits++;
     int numBytes = (int)ceil(numBits / 8.0);
@@ -37,47 +36,20 @@ unsigned int rank(OddEvenArray arr, unsigned int numBits) {
             z = z >> (8 - numBits%8);
         return __builtin_popcount(z);
     }
-    /*
-    else if (numBits <= 8*sizeof(unsigned long long)) {
-        printf("in the 64 case\n");
-        unsigned long long z = 0;
-        for (int i=0; i<numBytes; i++) {
-            z |= arr[i] << (8*numBytes - 8*(i+1));
-        }
-        if (numBits%8)
-            z = z >> (8 - numBits%8);
-        return __builtin_popcountll(z);
-    }
-    */
     else {
         int sum = 0;
         //copy of numbits
         int b = numBits;
         size_t longBitSize = 8*sizeof(unsigned int);
         while (b > longBitSize) {
-            //printf("sum is %d\n",sum);
             //-1 because it's there.
             sum += rank(arr, longBitSize-1);
             b -= longBitSize;
             arr += sizeof(unsigned char) * sizeof(unsigned int);
         }
-        //printf("sum is %d\n",sum);
-        //printf("b is %d\n",b);
         if (b) {
             sum += rank(arr, b-1);
         }
-        /*
-        for (int i=0; i<numBytes; i+=sizeof(unsigned long long)) {
-            if ((numBits - (i*longBitSize/8)) > longBitSize) {
-                unsigned long long* a = (unsigned long long*) (arr + i);
-                sum += __builtin_popcountll(*a);
-            }
-            else {
-                sum += rank(arr + i, numBits - (i*longBitSize/8));
-                break;
-            }
-        }
-        */
         return sum;
     }
 }
